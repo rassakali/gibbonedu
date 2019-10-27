@@ -240,3 +240,14 @@ table.mini th {
     font-size: 10px ;
 }
 */
+
+/******************/
+/*** Custom *******/
+/******************/
+.-ml-24 {
+	margin-left: 0 !important;
+}
+
+.mr-4 {
+	margin-right: -5rem !important;
+}

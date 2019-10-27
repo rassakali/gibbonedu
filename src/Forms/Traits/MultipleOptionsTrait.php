@@ -53,7 +53,7 @@ trait MultipleOptionsTrait
 
             foreach ($pieces as $piece) {
                 $piece = trim($piece);
-                $this->options[$piece] = $piece;
+                $this->options[$piece] = __($piece);
             }
         }
 

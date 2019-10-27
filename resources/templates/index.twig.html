@@ -20,7 +20,7 @@ TODO: add template variable details.
             <div class="mx-auto max-w-6xl text-right text-white text-xs md:text-sm px-2 xl:px-0 {{ gibbonHouseIDLogo ? 'mt-2' : 'mt-6' }}">
                 {{ minorLinks|raw }}
             </div>
-
+			<link rel="stylesheet" href="{{ absoluteURL }}/themes/Default/css/custom.css?v=18.0.01" type="text/css" media="all" />
             <div id="wrap" class="mx-auto max-w-6xl m-2 shadow-container rounded">
                 {% block header %}
                 <div id="header" class="relative bg-white flex justify-between items-center rounded-t h-24 sm:h-32">
@@ -95,20 +95,15 @@ TODO: add template variable details.
                 {% block footer %}
                 <div class="relative bg-transparent-600 text-white text-center text-sm p-6 mb-10 leading-normal rounded-b">
                     <span class="inline-block">
-                        {{ __('Powered by') }} <a class="link-white" target='_blank' href='https://gibbonedu.org'>Gibbon</a> {{ versionName }}</span> 
-                    <span class="inline-block">|  &#169; <a class="link-white" target='_blank' href='http://rossparker.org'>Ross Parker</a> 2010-{{ 'now'|date('Y') }}</span>
-                    <br/>
-
-                    <span class="text-xs">
-                        {{ __('Created under the') }} <a class="link-white" target='_blank' href='https://www.gnu.org/licenses/gpl.html'>GNU GPL</a> 
-                        at <a class="link-white" target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | 
-                        <a class="link-white" target='_blank' href='https://gibbonedu.org/about/#ourTeam'>{{ __('Credits') }}</a> | 
-                        <a class="link-white" target='_blank' href='https://gibbonedu.org/about/#translators'>{{ __('Translators') }}</a>
-                        <br/>
-                        {{ footerThemeAuthor }}<br/>
+                        <a class="link-white" target='_blank' href='mailto:contact@lcironse.be'>Contact LCI-Ronse</a>
                     </span>
+					<br/>
+                    <span class="text-xs">
+                        {{ __('Powered by') }} <a class="link-white" target='_blank' href='https://itweb.be'>itweb.be</a> 
+                    </span>
+                    <span class="text-xs">|  &#169; 2019-{{ 'now'|date('Y') }}</span>
 
-                    <img class="absolute right-0 top-0 -mt-2 sm:mr-0 md:mr-12 opacity-75 hidden sm:block" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/logoFooter.png"/>
+                    <img style="top: 10px;" class="absolute right-0 -mt-2 sm:mr-0 md:mr-12 opacity-75 hidden sm:block" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/logoFooter.png"/>
                 </div>
                 {% endblock %}
             </div>
