@@ -5,4 +5,6 @@
  * To change the template for this generated file go to
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
-include_once dirname(dirname(dirname(__FILE__))) . '/custom-config.php';
+$pathRoot = 'C:/apps/xampp322/htdocs/lcironse';
+$pathRootCustomRa = $pathRoot . '/modules/custom-gbn';
+$urlRootCustom = 'http://172.31.8.241/lcironse/';
