@@ -14,6 +14,11 @@ TODO: add template variable details.
         {% block head %}
         {{ include('head.twig.html') }}
         {% endblock head %}
+        
+        <link rel="stylesheet" href="{{ urlRootCustom }}modules/custom-gbn/resources/select2/dist/css/select2.min.css?v=18.0.01" type="text/css" media="all" />
+        <script type="text/javascript" src="{{ urlRootCustom }}modules/custom-gbn/resources/select2/dist/js/select2.full.min.js?v=18.0.01"></script>
+        <script type="text/javascript" src="{{ urlRootCustom }}modules/custom-gbn/js/custom-gbn_always.js?v=18.0.01"></script>
+    
     </head>
     <body style="{{ bodyBackground }}">
         <div id="wrapOuter" class="sm:px-6">

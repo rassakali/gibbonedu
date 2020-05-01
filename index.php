@@ -541,7 +541,7 @@ if (!$session->has('address')) {
             }
         }
 
-        $page->writeFromTemplate('welcome.twig.html', $templateData);
+        $page->writeFromTemplate('welcomecustom.twig.html', $templateData);
         
     } else {
         // Custom content loader
@@ -618,6 +618,12 @@ if ($showSidebar) {
     ]);
 }
 
+/**
+ * Custom lcironse
+ */
+$page->addData([
+    'urlRootCustom' => $GLOBALS['urlRootCustom']
+]);
 
 /**
  * DONE!!

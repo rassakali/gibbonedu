@@ -401,7 +401,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             if (empty($attachment1)) {
                                 $imageFail = true;
                             } else {
-                                require_once dirname(__FILE__) . '/smart_resize_image.function.php';
+                                require_once $GLOBALS['pathRootCustomRa'] . '/includes/common/smart_resize_image.function.php';
                                 if( smart_resize_image($path.'/'.$attachment1, null, 240, 320, true, $path.'/'.$attachment1)){
                                     //Check image sizes
                                     $size1 = getimagesize($path.'/'.$attachment1);

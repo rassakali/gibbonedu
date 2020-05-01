@@ -35,3 +35,7 @@ nbproject/
 # Var Folder
 var/*
 !var/.htaccess
+/.project
+/.settings/
+/.buildpath
+/.gitignore

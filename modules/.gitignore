@@ -51,6 +51,7 @@
 !/Tracking/**
 !/User Admin
 !/User Admin/**
+!/custom-gbn/**
 
 # black list some files and folders
 # in the module folders
