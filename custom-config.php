@@ -7,4 +7,4 @@
  */
 $pathRoot = 'C:/apps/xampp322/htdocs/lcironse';
 $pathRootCustomRa = $pathRoot . '/modules/custom-gbn';
-$urlRootCustom = 'http://172.31.8.241/lcironse/';
+$urlRootCustom = 'http://192.168.56.1/lcironse/';

@@ -16,8 +16,8 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
         {% set url = absoluteURL ~ "/?q=/modules/custom-gbn/applicationForm_custom.php" %}
         {{ __('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.')|format(organisationName, '', '')|raw }}
         <ul>
-	        <li><a href="{{ url }}&i18n=fr_FR">{{ __('Applications') }} / {{ __('Re-Enrol') }} {{ __('Online') }} ({{ __('French') }})</a></li>
-	        <li><a href="{{ url }}&i18n=nl_NL">{{ __('Applications') }} / {{ __('Re-Enrol') }} {{ __('Online') }} ({{ __('Dutch') }})</a></li>
+	        <li><a href="{{ url }}&i18n=fr_FR">Demandes d'inscriptions ou r&eacute;inscription en ligne</a></li>
+	        <li><a href="{{ url }}&i18n=nl_NL">Aanvragen voor online registratie of herregistratie</a></li>
         </ul>
     </p>
 {% endif %}

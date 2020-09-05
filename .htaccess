@@ -3,9 +3,9 @@ Order Allow,Deny
 Deny from all
 </FilesMatch>
 
-# RewriteEngine On
-# RewriteCond %{QUERY_STRING} q=/modules/Students/applicationForm.php
-# RewriteRule ^ %{REQUEST_URI}?q=/modules/Students/applicationForm_custom\.php [R]
+RewriteEngine On
+RewriteCond %{QUERY_STRING} q=/modules/Students/applicationForm.php
+RewriteRule ^ %{REQUEST_URI}?q=/modules/custom-gbn/applicationForm_custom\.php [R]
 
 
 
