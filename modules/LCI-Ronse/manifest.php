@@ -26,11 +26,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 /**
  * Basic variables
  */
-$name        = "custom-gbn";            // The name of the variable as it appears to users. Needs to be unique to installation. Also the name of the folder that holds the unit.
-$description = "Custom Gibbone";            // Short text description
+$name        = "LCI-Ronse";            // The name of the variable as it appears to users. Needs to be unique to installation. Also the name of the folder that holds the unit.
+$description = "Customization for LCI Ronse";            // Short text description
 $entryURL    = "index.php";   // The landing page for the unit, used in the main menu
 $type        = "Additional";  // Do not change.
-$category    = "LCI-Ronse";            // The main menu area to place the module in
+$category    = "Other";            // The main menu area to place the module in
 $version     = "0.1";            // Version number
 $author      = "Rezki ASSAKALI";            // Your name
 $url         = "";            // Your URL
@@ -41,7 +41,7 @@ $url         = "";            // Your URL
  * One array entry for every database table you need to create. Convention dictates that you preface the table name with the module name, to keep the db neat.
  * Other sql can be run, but resulting data will not be cleaned up on uninstall.
  */
-$moduleTables[] = "";
+$moduleTables[] = "INSERT INTO `gibboncountry` (`printable_name`, `iddCountryCode`) VALUES ('Inconnu', '');";
 
 /**
  * Settings
@@ -56,23 +56,23 @@ $gibbonSetting[] = "";
  * One array per action.
  */
 $actionRows[] = [
-    'name'         => "",   // The name of the action (appears to user in the right hand side module menu)
+    'name'         => "Return",   // The name of the action (appears to user in the right hand side module menu)
     'precedence'   => "0",  // If it is a grouped action, the precedence controls which is highest action in group
-    'category'     => "",   // Optional: subgroups for the right hand side module menu
-    'description'  => "",   // Text description
-    'URLList'      => "",   // List of pages included in this action
-    'entryURL'     => "",   // The landing action for the page
+    'category'     => "Admissions",   // Optional: subgroups for the right hand side module menu
+    'description'  => "Return to students",   // Text description
+    'URLList'      => "returnToStudents.php",   // List of pages included in this action
+    'entryURL'     => "returnToStudents.php",   // The landing action for the page
     'entrySidebar' => "Y",  // Will the page have a sidebar? Set this to N for fullscreen
     'menuShow'     => "Y",  // Does the page display in the module menu?
     'defaultPermissionAdmin'    => "Y",   // Default permission for built in role Admin
     'defaultPermissionTeacher'  => "Y",   // Default permission for built in role Teacher
-    'defaultPermissionStudent'  => "N",   // Default permission for built in role Student
-    'defaultPermissionParent'   => "N",   // Default permission for built in role Parent
-    'defaultPermissionSupport'  => "N",   // Default permission for built in role Support
+    'defaultPermissionStudent'  => "Y",   // Default permission for built in role Student
+    'defaultPermissionParent'   => "Y",   // Default permission for built in role Parent
+    'defaultPermissionSupport'  => "Y",   // Default permission for built in role Support
     'categoryPermissionStaff'   => "Y",   // Should this action be available to user roles in the Staff category?
-    'categoryPermissionStudent' => "N",   // Should this action be available to user roles in the Student category?
-    'categoryPermissionParent'  => "N",   // Should this action be available to user roles in the Parent category?
-    'categoryPermissionOther'   => "N",   // Should this action be available to user roles in the Other category?
+    'categoryPermissionStudent' => "Y",   // Should this action be available to user roles in the Student category?
+    'categoryPermissionParent'  => "Y",   // Should this action be available to user roles in the Parent category?
+    'categoryPermissionOther'   => "Y",   // Should this action be available to user roles in the Other category?
 ];
 
 /**

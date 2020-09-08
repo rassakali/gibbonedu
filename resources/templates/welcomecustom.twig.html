@@ -13,7 +13,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 {% if publicStudentApplications %}
     <h2 style='margin-top: 30px'>{{ __('Student Applications') }}</h2>
     <p>
-        {% set url = absoluteURL ~ "/?q=/modules/custom-gbn/applicationForm_custom.php" %}
+        {% set url = absoluteURL ~ "/?q=/modules/LCI-Ronse/applicationForm_custom.php" %}
         {{ __('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.')|format(organisationName, '', '')|raw }}
         <ul>
 	        <li><a href="{{ url }}&i18n=fr_FR">Demandes d'inscriptions ou r&eacute;inscription en ligne</a></li>

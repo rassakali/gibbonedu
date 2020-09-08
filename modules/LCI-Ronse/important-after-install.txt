@@ -2,7 +2,7 @@ Add in the last of the file:
 	/**
 	 * Custom lcironse
 	 */
-	require_once __DIR__.'/modules/custom-gbn/custom-config.php';
+	require_once __DIR__.'/modules/LCI-Ronse/custom-config.php';
 	
 In 
 	C:\apps\xampp322\htdocs\lcironse\gibbon.php
@@ -36,9 +36,9 @@ In :
 	C:\apps\xampp322\htdocs\lcironse\index.php
 ########################################################
 Add:
-        <link rel="stylesheet" href="{{ urlRootCustom }}modules/custom-gbn/resources/select2/dist/css/select2.min.css?v=18.0.01" type="text/css" media="all" />
-        <script type="text/javascript" src="{{ urlRootCustom }}modules/custom-gbn/resources/select2/dist/js/select2.full.min.js?v=18.0.01"></script>
-        <script type="text/javascript" src="{{ urlRootCustom }}modules/custom-gbn/js/custom-gbn_always.js?v=18.0.01"></script>
+        <link rel="stylesheet" href="{{ urlRootCustom }}modules/LCI-Ronse/resources/select2/dist/css/select2.min.css?v=18.0.01" type="text/css" media="all" />
+        <script type="text/javascript" src="{{ urlRootCustom }}modules/LCI-Ronse/resources/select2/dist/js/select2.full.min.js?v=18.0.01"></script>
+        <script type="text/javascript" src="{{ urlRootCustom }}modules/LCI-Ronse/js/LCI-Ronse_always.js?v=18.0.01"></script>
 After:
 	{% endblock head %}
 	

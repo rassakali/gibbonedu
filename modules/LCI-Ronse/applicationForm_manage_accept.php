@@ -89,9 +89,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $sql .= " FROM `gibbonperson`";
                 $sql .= " JOIN gibbonfamilyadult ON (gibbonfamilyadult.gibbonPersonID=gibbonperson.gibbonPersonID)";
                 $sql .= " JOIN gibbonfamily ON (gibbonfamily.gibbonFamilyID=gibbonfamilyadult.gibbonFamilyID)";
-                $sql .= " WHERE gibbonperson.email IN (SELECT parent1email FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
-                $sql .= " OR gibbonperson.email IN (SELECT parent2email FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
-                // echo customGbn_getSql($sql, $data);
+                $sql .= " WHERE gibbonperson.email IN (SELECT parent1email FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND parent1email <> '')";
+                $sql .= " OR gibbonperson.email IN (SELECT parent2email FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND parent1email <> '')";
+                $sql .= " OR SUBSTRING(gibbonperson.phone1, -8) IN (SELECT SUBSTRING(parent1phone1, -8) FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
+                $sql .= " OR SUBSTRING(gibbonperson.phone1, -8) IN (SELECT SUBSTRING(parent2phone1, -8) FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
+                //echo customGbn_getSql($sql, $data);
                 $resultLinked = $pdo->executeQuery($data, $sql);
                 if ($resultLinked) {
                     $linkedApplication = $resultLinked->fetch();

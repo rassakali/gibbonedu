@@ -51,8 +51,8 @@
 !/Tracking/**
 !/User Admin
 !/User Admin/**
-!/custom-gbn
-!/custom-gbn/**
+!/LCI-Ronse
+!/LCI-Ronse/**
 
 # black list some files and folders
 # in the module folders

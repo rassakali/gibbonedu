@@ -85,4 +85,4 @@ if ($gibbon->isInstalled() == true) {
 /**
  * Custom lcironse
  */
-require_once __DIR__.'/modules/custom-gbn/custom-config.php';
+require_once __DIR__.'/modules/LCI-Ronse/custom-config.php';

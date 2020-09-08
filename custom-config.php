@@ -6,5 +6,5 @@
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
 $pathRoot = 'C:/apps/xampp322/htdocs/lcironse';
-$pathRootCustomRa = $pathRoot . '/modules/custom-gbn';
+$pathRootCustomRa = $pathRoot . '/modules/LCI-Ronse';
 $urlRootCustom = 'http://192.168.56.1/lcironse/';
