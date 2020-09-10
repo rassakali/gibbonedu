@@ -13,12 +13,15 @@ if (! empty($_GET['postsParams'])) {
 }
 
 // check if file exist
-// If (isset($_GET['q'])) {
-//     $root = dirname(dirname(dirname(__FILE__)));
-//     if (! is_file($root. urldecode($_GET['q']))) {
-//         var_dump($_SESSION);
-//     }
-// }
+If (isset($_GET['q'])) {
+    $root = dirname(dirname(dirname(__FILE__)));
+    if (! is_file($root. urldecode($_GET['q']))) {
+        $url = '?';
+        $url .= 'q=' . str_replace('LCI-Ronse', 'Students', urldecode($_GET['q']));
+        $url .= '&' . customGbn_getPostsParams();
+        header("Location: {$url}");
+    }
+}
 
 /**
  * redirect: q=/modules/Students/applicationForm.php to q=/modules/LCI-Ronse/applicationForm_custom.php

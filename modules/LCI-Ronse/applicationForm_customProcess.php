@@ -46,8 +46,8 @@ if (isset($_SESSION[$guid]['username']) == false) {
     if ($access == 'Y') {
         $proceed = true;
     }
-} else {
-    if (isActionAccessible($guid, $connection2, '/modules/LCI-Ronse/applicationForm_custom.php') != false) {
+} else { // ne pas changer à "/modules/LCI-Ronse/applicationForm_custom.php" car c'est pour les droits
+    if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm.php') != false) {
         $proceed = true;
     }
 }
@@ -252,18 +252,18 @@ if ($proceed == false) {
         if (isset($_POST['parent1phone1'])) {
             $parent1phone1 = preg_replace("/[^0-9+]/", "", $_POST['parent1phone1']);;
         }
-        $parent1phone2Type = null;
+        $parent1phone2Type = '';
         if (isset($_POST['parent1phone2Type'])) {
             $parent1phone2Type = $_POST['parent1phone2Type'];
         }
         if (isset($_POST['parent1phone2']) and $parent1phone2Type == '') {
             $parent1phone2Type = 'Other';
         }
-        $parent1phone2CountryCode = null;
+        $parent1phone2CountryCode = '';
         if (isset($_POST['parent1phone2CountryCode'])) {
             $parent1phone2CountryCode = $_POST['parent1phone2CountryCode'];
         }
-        $parent1phone2 = null;
+        $parent1phone2 = '';
         if (isset($_POST['parent1phone2'])) {
             $parent1phone2 = preg_replace("/[^0-9+]/", "", $_POST['parent1phone2']);
         }

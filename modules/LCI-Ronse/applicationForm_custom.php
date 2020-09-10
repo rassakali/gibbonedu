@@ -749,6 +749,7 @@ if ($proceed == false) {
             // $row->addSelectLanguage("parent{$i}languageSecond")
             // ->placeholder()
             // ->loadFrom($application);
+                $form->addHiddenValue("parent{$i}languageSecond", "");
 
             // PARENT EMPLOYMENT
             // $row = $form->addRow()->setClass("parentSection{$i}");

@@ -70,13 +70,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $data = array(
                 'gibbonApplicationFormID' => $gibbonApplicationFormID
             );
-            $sql = "SELECT DISTINCT gibbonApplicationFormID, gibbonFamilyID FROM gibbonApplicationForm
+            $sql = "SELECT DISTINCT gibbonApplicationFormID, gibbonApplicationForm.gibbonFamilyID, gibbonfamily.name as familyName FROM gibbonApplicationForm
                     JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
+                    JOIN gibbonFamily ON gibbonFamily.gibbonFamilyID=gibbonApplicationForm.gibbonFamilyID
                     WHERE gibbonApplicationForm.gibbonFamilyID IS NOT NULL
                     AND gibbonApplicationForm.status='Accepted'
                     AND (gibbonApplicationFormID1=:gibbonApplicationFormID OR gibbonApplicationFormID2=:gibbonApplicationFormID)
                     LIMIT 1";
-
+            //echo customGbn_getSql($sql, $data); die;
             $resultLinked = $pdo->executeQuery($data, $sql);
 
             if ($resultLinked && $resultLinked->rowCount() == 1) {
@@ -91,9 +92,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $sql .= " JOIN gibbonfamily ON (gibbonfamily.gibbonFamilyID=gibbonfamilyadult.gibbonFamilyID)";
                 $sql .= " WHERE gibbonperson.email IN (SELECT parent1email FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND parent1email <> '')";
                 $sql .= " OR gibbonperson.email IN (SELECT parent2email FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND parent1email <> '')";
-                $sql .= " OR SUBSTRING(gibbonperson.phone1, -8) IN (SELECT SUBSTRING(parent1phone1, -8) FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
-                $sql .= " OR SUBSTRING(gibbonperson.phone1, -8) IN (SELECT SUBSTRING(parent2phone1, -8) FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
-                //echo customGbn_getSql($sql, $data);
+                $sql .= " OR SUBSTRING(gibbonperson.phone1, -8) IN (SELECT SUBSTRING(parent1phone1, -8) FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND SUBSTRING(parent1phone1, -8) <> '')";
+                $sql .= " OR SUBSTRING(gibbonperson.phone1, -8) IN (SELECT SUBSTRING(parent2phone1, -8) FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND SUBSTRING(parent2phone1, -8) <> '')";
+                //echo customGbn_getSql($sql, $data); die;
                 $resultLinked = $pdo->executeQuery($data, $sql);
                 if ($resultLinked) {
                     $linkedApplication = $resultLinked->fetch();
@@ -114,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $sql .= "  OR gibbonperson.preferredName IN (SELECT preferredName FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
             $sql .= "  )";
             $sql .= " )";
-            // echo customGbn_getSql($sql, $data); die;
+            //echo customGbn_getSql($sql, $data); die;
             $studentApplication = null;
             $resultStudent = $pdo->executeQuery($data, $sql);
             if ($resultStudent) {
