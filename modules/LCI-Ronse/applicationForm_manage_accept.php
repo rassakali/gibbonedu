@@ -70,52 +70,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $data = array(
                 'gibbonApplicationFormID' => $gibbonApplicationFormID
             );
-            $sql = "SELECT DISTINCT gibbonApplicationFormID, gibbonApplicationForm.gibbonFamilyID, gibbonfamily.name as familyName FROM gibbonApplicationForm
+            $sql = "SELECT DISTINCT gibbonApplicationFormID, gibbonApplicationForm.gibbonFamilyID, gibbonFamily.name as familyName FROM gibbonApplicationForm
                     JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
                     JOIN gibbonFamily ON gibbonFamily.gibbonFamilyID=gibbonApplicationForm.gibbonFamilyID
                     WHERE gibbonApplicationForm.gibbonFamilyID IS NOT NULL
                     AND gibbonApplicationForm.status='Accepted'
                     AND (gibbonApplicationFormID1=:gibbonApplicationFormID OR gibbonApplicationFormID2=:gibbonApplicationFormID)
                     LIMIT 1";
-            //echo customGbn_getSql($sql, $data); die;
+            // echo customGbn_getSql($sql, $data); die;
             $resultLinked = $pdo->executeQuery($data, $sql);
 
             if ($resultLinked && $resultLinked->rowCount() == 1) {
                 $linkedApplication = $resultLinked->fetch();
+                if (! empty($linkedApplication['gibbonFamilyID'])) {
+                    $gibbonFamilyID = $linkedApplication['gibbonFamilyID'];
+                }
             }
 
             // Find an existing family by email
             if (empty($linkedApplication)) {
-                $sql = "SELECT gibbonperson.gibbonPersonID, gibbonperson.surname, gibbonperson.firstName, gibbonperson.email, gibbonfamily.gibbonFamilyID, gibbonfamily.name as familyName";
-                $sql .= " FROM `gibbonperson`";
-                $sql .= " JOIN gibbonfamilyadult ON (gibbonfamilyadult.gibbonPersonID=gibbonperson.gibbonPersonID)";
-                $sql .= " JOIN gibbonfamily ON (gibbonfamily.gibbonFamilyID=gibbonfamilyadult.gibbonFamilyID)";
-                $sql .= " WHERE gibbonperson.email IN (SELECT parent1email FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND parent1email <> '')";
-                $sql .= " OR gibbonperson.email IN (SELECT parent2email FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND parent1email <> '')";
-                $sql .= " OR SUBSTRING(gibbonperson.phone1, -8) IN (SELECT SUBSTRING(parent1phone1, -8) FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND SUBSTRING(parent1phone1, -8) <> '')";
-                $sql .= " OR SUBSTRING(gibbonperson.phone1, -8) IN (SELECT SUBSTRING(parent2phone1, -8) FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND SUBSTRING(parent2phone1, -8) <> '')";
-                //echo customGbn_getSql($sql, $data); die;
+                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.firstName, gibbonPerson.email, gibbonFamily.gibbonFamilyID, gibbonFamily.name as familyName";
+                $sql .= " FROM `gibbonPerson`";
+                $sql .= " JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)";
+                $sql .= " JOIN gibbonFamily ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)";
+                $sql .= " WHERE gibbonPerson.email IN (SELECT parent1email FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND parent1email <> '')";
+                $sql .= " OR gibbonPerson.email IN (SELECT parent2email FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND parent1email <> '')";
+                $sql .= " OR SUBSTRING(gibbonPerson.phone1, -8) IN (SELECT SUBSTRING(parent1phone1, -8) FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND SUBSTRING(parent1phone1, -8) <> '')";
+                $sql .= " OR SUBSTRING(gibbonPerson.phone1, -8) IN (SELECT SUBSTRING(parent2phone1, -8) FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND SUBSTRING(parent2phone1, -8) <> '')";
+                // echo customGbn_getSql($sql, $data); die;
                 $resultLinked = $pdo->executeQuery($data, $sql);
                 if ($resultLinked) {
                     $linkedApplication = $resultLinked->fetch();
+                    $gibbonFamilyID = $linkedApplication['gibbonFamilyID'];
                 }
             }
 
             // Find if student exist
-            $sql = "SELECT gibbonperson.gibbonPersonID, gibbonperson.nationalIDCardNumber, gibbonperson.surname, gibbonperson.firstName, gibbonperson.preferredName, gibbonperson.email, gibbonfamily.gibbonFamilyID, gibbonfamily.name as familyName";
-            $sql .= " FROM `gibbonperson`";
-            $sql .= " JOIN gibbonfamilychild ON (gibbonfamilychild.gibbonPersonID=gibbonperson.gibbonPersonID)";
-            $sql .= " JOIN gibbonfamily ON (gibbonfamily.gibbonFamilyID=gibbonfamilychild.gibbonFamilyID)";
-            $sql .= " WHERE gibbonperson.nationalIDCardNumber IN (SELECT nationalIDCardNumber FROM gibbonapplicationform WHERE gibbonapplicationform.gibbonApplicationFormID=:gibbonApplicationFormID)";
+            $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.nationalIDCardNumber, gibbonPerson.surname, gibbonPerson.firstName, gibbonPerson.preferredName, gibbonPerson.email, gibbonFamily.gibbonFamilyID, gibbonFamily.name as familyName";
+            $sql .= " FROM `gibbonPerson`";
+            $sql .= " JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)";
+            $sql .= " JOIN gibbonFamily ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID)";
+            $sql .= " WHERE gibbonPerson.nationalIDCardNumber IN (SELECT nationalIDCardNumber FROM gibbonApplicationForm WHERE gibbonApplicationForm.gibbonApplicationFormID=:gibbonApplicationFormID)";
             $sql .= " OR (";
-            $sql .= " gibbonperson.dob IN (SELECT dob FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
-            $sql .= " AND gibbonperson.surname IN (SELECT surname FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
+            $sql .= " gibbonPerson.dob IN (SELECT dob FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
+            $sql .= " AND gibbonPerson.surname IN (SELECT surname FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
             $sql .= " AND (";
-            $sql .= "  gibbonperson.firstName IN (SELECT firstName FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
-            $sql .= "  OR gibbonperson.preferredName IN (SELECT preferredName FROM gibbonapplicationform WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
+            $sql .= "  gibbonPerson.firstName IN (SELECT firstName FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
+            $sql .= "  OR gibbonPerson.preferredName IN (SELECT preferredName FROM gibbonApplicationForm WHERE gibbonApplicationFormID=:gibbonApplicationFormID)";
             $sql .= "  )";
             $sql .= " )";
-            //echo customGbn_getSql($sql, $data); die;
+            // echo customGbn_getSql($sql, $data); die;
             $studentApplication = null;
             $resultStudent = $pdo->executeQuery($data, $sql);
             if ($resultStudent) {
@@ -605,7 +609,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     } catch (PDOException $e) {
                         echo "<div class='error'>" . $e->getMessage() . '</div>';
                     }
-                    if ($resultDoc->rowCount() > 0) {
+                    if ($resultDoc->rowCount() > 0 && ! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonStudentNote` WHERE gibbonPersonID=$gibbonPersonID")) {
                         $note = '<p>';
                         while ($rowDoc = $resultDoc->fetch()) {
                             $note .= "<a href='" . $_SESSION[$guid]['absoluteURL'] . '/' . $rowDoc['path'] . "'>" . $rowDoc['name'] . '</a><br/>';
@@ -628,21 +632,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     }
 
                     // Create medical record if possible
-                    try {
-                        $data = array(
-                            'gibbonPersonID' => $gibbonPersonID,
-                            'comment' => $values['medicalInformation']
-                        );
-                        $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, comment=:comment';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>" . $e->getMessage() . '</div>';
+                    if (! empty($values['medicalInformation']) && ! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonPersonMedical` WHERE gibbonPersonID=$gibbonPersonID")) {
+                        try {
+                            $data = array(
+                                'gibbonPersonID' => $gibbonPersonID,
+                                'comment' => $values['medicalInformation']
+                            );
+                            $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, comment=:comment';
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>" . $e->getMessage() . '</div>';
+                        }
                     }
-
                     // Enrol student
                     $enrolmentOK = true;
-                    if ($values['gibbonRollGroupID'] != '') {
+                    if ($values['gibbonRollGroupID'] != '' && ! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonStudentEnrolment` WHERE gibbonPersonID=$gibbonPersonID AND gibbonYearGroupID=" . $values['gibbonSchoolYearIDEntry'])) {
                         if ($gibbonPersonID != '' and $values['gibbonSchoolYearIDEntry'] != '' and $values['gibbonYearGroupIDEntry'] != '') {
                             try {
                                 $data = array(
@@ -676,7 +681,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                             // Handle automatic course enrolment if enabled
                             $autoEnrolStudent = (isset($_POST['autoEnrolStudent'])) ? $_POST['autoEnrolStudent'] : 'N';
-                            if ($autoEnrolStudent == 'Y') {
+                            if ($autoEnrolStudent == 'Y' && ! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonCourseClassPerson` WHERE gibbonPersonID=$gibbonPersonID AND gibbonRollGroupID=" . $values['gibbonRollGroupID'])) {
                                 $data = array(
                                     'gibbonRollGroupID' => $values['gibbonRollGroupID'],
                                     'gibbonPersonID' => $gibbonPersonID
@@ -730,26 +735,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $gibbonFinanceFeeCategoryIDList = null;
                     }
                     $paymentOK = true;
-                    try {
-                        $data = array(
-                            'gibbonPersonID' => $gibbonPersonID,
-                            'invoiceTo' => $invoiceTo,
-                            'companyName' => $companyName,
-                            'companyContact' => $companyContact,
-                            'companyAddress' => $companyAddress,
-                            'companyEmail' => $companyEmail,
-                            'companyPhone' => $companyPhone,
-                            'companyAll' => $companyAll,
-                            'gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList
-                        );
-                        $sql = 'INSERT INTO gibbonFinanceInvoicee SET gibbonPersonID=:gibbonPersonID, invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $paymentOK = false;
-                        echo "<div class='error'>" . $e->getMessage() . '</div>';
+                    if (! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonFinanceInvoicee` WHERE gibbonPersonID=$gibbonPersonID")) {
+                        try {
+                            $data = array(
+                                'gibbonPersonID' => $gibbonPersonID,
+                                'invoiceTo' => $invoiceTo,
+                                'companyName' => $companyName,
+                                'companyContact' => $companyContact,
+                                'companyAddress' => $companyAddress,
+                                'companyEmail' => $companyEmail,
+                                'companyPhone' => $companyPhone,
+                                'companyAll' => $companyAll,
+                                'gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList
+                            );
+                            $sql = 'INSERT INTO gibbonFinanceInvoicee SET gibbonPersonID=:gibbonPersonID, invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList';
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        } catch (PDOException $e) {
+                            $paymentOK = false;
+                            echo "<div class='error'>" . $e->getMessage() . '</div>';
+                        }
                     }
-
                     if ($paymentOK == false) {
                         echo "<div class='warning'>";
                         echo __('Student payment details could not be saved, but we will continue, as this is a minor issue.');
@@ -771,7 +777,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 'gibbonFamilyID' => $values['gibbonFamilyID'],
                                 'gibbonPersonID' => $gibbonPersonID
                             );
-                            $sqlFamilyChildLink = 'SELECT * FROM gibbonfamilychild WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonID=:gibbonPersonID';
+                            $sqlFamilyChildLink = 'SELECT * FROM gibbonFamilyChild WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonID=:gibbonPersonID';
                             $resultFamilyChildLink = $connection2->prepare($sqlFamilyChildLink);
                             $resultFamilyChildLink->execute($dataFamilyChildLink);
                         } catch (PDOException $e) {
@@ -791,7 +797,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             if ($resultFamily->rowCount() == 1) {
                                 $rowFamily = $resultFamily->fetch();
                                 $familyName = $rowFamily['name'];
-                                if ($familyName != '') {
+                                if ($familyName != '' && ! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonFamilyChild` WHERE gibbonPersonID=$gibbonPersonID AND gibbonFamilyID=" . $values['gibbonFamilyID'])) {
                                     $insertFail = false;
                                     try {
                                         $data = array(
@@ -842,8 +848,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                                 'gibbonPersonID2' => $gibbonPersonID,
                                                 'relationship' => $values["parent{$i}relationship"]
                                             );
-                                            $sqlParent = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
-                                            $resultParentRelationship = $pdo->executeQuery($dataParent, $sqlParent);
+                                            if (! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonFamilyRelationship` WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2", [
+                                                'gibbonFamilyID' => $values['gibbonFamilyID'],
+                                                'gibbonPersonID1' => $values["parent{$i}gibbonPersonID"],
+                                                'gibbonPersonID2' => $gibbonPersonID
+                                            ])) {
+                                                $sqlParent = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
+                                                $resultParentRelationship = $pdo->executeQuery($dataParent, $sqlParent);
+                                            }
                                         } catch (PDOException $e) {
                                             echo "<div class='error'>" . $e->getMessage() . '</div>';
                                         }
@@ -912,9 +924,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                             'gibbonPersonID2' => $gibbonPersonID,
                                             'relationship' => $relationship
                                         );
-                                        $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
-                                        $result = $connection2->prepare($sql);
-                                        $result->execute($data);
+                                        if (! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonFamilyRelationship` WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2", [
+                                            'gibbonFamilyID' => $values['gibbonFamilyID'],
+                                            'gibbonPersonID1' => $rowParents['gibbonPersonID'],
+                                            'gibbonPersonID2' => $gibbonPersonID
+                                        ])) {
+                                            $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
+                                            $result = $connection2->prepare($sql);
+                                            $result->execute($data);
+                                        }
                                     } catch (PDOException $e) {
                                         echo "<div class='error'>" . $e->getMessage() . '</div>';
                                     }
@@ -1065,9 +1083,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                                 'gibbonPersonID' => $gibbonPersonID,
                                                 'gibbonFamilyID' => $gibbonFamilyID
                                             );
-                                            $sql = 'INSERT INTO gibbonFamilyChild SET gibbonPersonID=:gibbonPersonID, gibbonFamilyID=:gibbonFamilyID';
-                                            $result = $connection2->prepare($sql);
-                                            $result->execute($data);
+                                            if (! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonFamilyChild` WHERE gibbonPersonID=:gibbonPersonID AND gibbonFamilyID=:gibbonFamilyID", $data)) {
+                                                $sql = 'INSERT INTO gibbonFamilyChild SET gibbonPersonID=:gibbonPersonID, gibbonFamilyID=:gibbonFamilyID';
+                                                $result = $connection2->prepare($sql);
+                                                $result->execute($data);
+                                            }
                                         } catch (PDOException $e) {
                                             $insertOK = false;
                                             echo "<div class='error'>" . $e->getMessage() . '</div>';
@@ -1129,9 +1149,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                                     'gibbonPersonID' => $gibbonPersonIDParent1,
                                                     'gibbonFamilyID' => $gibbonFamilyID
                                                 );
-                                                $sql = "INSERT INTO gibbonFamilyAdult SET gibbonPersonID=:gibbonPersonID, gibbonFamilyID=:gibbonFamilyID, contactPriority=1, contactCall='Y', contactSMS='Y', contactEmail='Y', contactMail='Y'";
-                                                $result = $connection2->prepare($sql);
-                                                $result->execute($data);
+                                                if (! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonFamilyAdult` WHERE gibbonPersonID=:gibbonPersonID AND gibbonFamilyID=:gibbonFamilyID", $data)) {
+                                                    $sql = "INSERT INTO gibbonFamilyAdult SET gibbonPersonID=:gibbonPersonID, gibbonFamilyID=:gibbonFamilyID, contactPriority=1, contactCall='Y', contactSMS='Y', contactEmail='Y', contactMail='Y'";
+                                                    $result = $connection2->prepare($sql);
+                                                    $result->execute($data);
+                                                }
                                             } catch (PDOException $e) {
                                                 $insertOK = false;
                                                 echo "<div class='error'>" . $e->getMessage() . '</div>';
@@ -1157,9 +1179,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         'gibbonPersonID2' => $gibbonPersonID,
                                         'relationship' => $values['parent1relationship']
                                     );
-                                    $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
-                                    $result = $connection2->prepare($sql);
-                                    $result->execute($data);
+                                    if (! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonFamilyRelationship` WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2", [
+                                        'gibbonFamilyID' => $gibbonFamilyID,
+                                        'gibbonPersonID1' => $gibbonPersonIDParent1,
+                                        'gibbonPersonID2' => $gibbonPersonID
+                                    ])) {
+                                        $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
+                                        $result = $connection2->prepare($sql);
+                                        $result->execute($data);
+                                    }
                                 } catch (PDOException $e) {
                                     echo "<div class='error'>" . $e->getMessage() . '</div>';
                                 }
@@ -1304,9 +1332,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                                         'contactEmail' => 'Y',
                                                         'contactMail' => 'Y'
                                                     );
-                                                    $sql = 'INSERT INTO gibbonFamilyAdult SET gibbonPersonID=:gibbonPersonID, gibbonFamilyID=:gibbonFamilyID, contactPriority=1, contactCall=:contactCall, contactSMS=:contactSMS, contactEmail=:contactEmail, contactMail=:contactMail';
-                                                    $result = $connection2->prepare($sql);
-                                                    $result->execute($data);
+                                                    if (! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonFamilyAdult` WHERE gibbonPersonID=:gibbonPersonID AND gibbonFamilyID=:gibbonFamilyID", [
+                                                        'gibbonPersonID' => $gibbonPersonIDParent1,
+                                                        'gibbonFamilyID' => $gibbonFamilyID
+                                                    ])) {
+                                                        $sql = 'INSERT INTO gibbonFamilyAdult SET gibbonPersonID=:gibbonPersonID, gibbonFamilyID=:gibbonFamilyID, contactPriority=1, contactCall=:contactCall, contactSMS=:contactSMS, contactEmail=:contactEmail, contactMail=:contactMail';
+                                                        $result = $connection2->prepare($sql);
+                                                        $result->execute($data);
+                                                    }
                                                 } catch (PDOException $e) {
                                                     $insertOK = false;
                                                     echo "<div class='error'>" . $e->getMessage() . '</div>';
@@ -1331,9 +1364,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                                 'gibbonPersonID2' => $gibbonPersonID,
                                                 'relationship' => $values['parent1relationship']
                                             );
-                                            $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
-                                            $result = $connection2->prepare($sql);
-                                            $result->execute($data);
+                                            if (! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonFamilyRelationship` WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2", [
+                                                'gibbonFamilyID' => $gibbonFamilyID,
+                                                'gibbonPersonID1' => $gibbonPersonIDParent1,
+                                                'gibbonPersonID2' => $gibbonPersonID
+                                            ])) {
+                                                $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
+                                                $result = $connection2->prepare($sql);
+                                                $result->execute($data);
+                                            }
                                         } catch (PDOException $e) {
                                             echo "<div class='error'>" . $e->getMessage() . '</div>';
                                         }
@@ -1484,9 +1523,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                                         'contactEmail' => 'Y',
                                                         'contactMail' => 'Y'
                                                     );
-                                                    $sql = 'INSERT INTO gibbonFamilyAdult SET gibbonPersonID=:gibbonPersonID, gibbonFamilyID=:gibbonFamilyID, contactPriority=2, contactCall=:contactCall, contactSMS=:contactSMS, contactEmail=:contactEmail, contactMail=:contactMail';
-                                                    $result = $connection2->prepare($sql);
-                                                    $result->execute($data);
+                                                    if (! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonFamilyAdult` WHERE gibbonPersonID=:gibbonPersonID AND gibbonFamilyID=:gibbonFamilyID", [
+                                                        'gibbonPersonID' => $gibbonPersonIDParent2,
+                                                        'gibbonFamilyID' => $gibbonFamilyID
+                                                    ])) {
+                                                        $sql = 'INSERT INTO gibbonFamilyAdult SET gibbonPersonID=:gibbonPersonID, gibbonFamilyID=:gibbonFamilyID, contactPriority=2, contactCall=:contactCall, contactSMS=:contactSMS, contactEmail=:contactEmail, contactMail=:contactMail';
+                                                        $result = $connection2->prepare($sql);
+                                                        $result->execute($data);
+                                                    }
                                                 } catch (PDOException $e) {
                                                     $insertOK = false;
                                                     echo "<div class='error'>" . $e->getMessage() . '</div>';
@@ -1511,9 +1555,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                                 'gibbonPersonID2' => $gibbonPersonID,
                                                 'relationship' => $values['parent2relationship']
                                             );
-                                            $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
-                                            $result = $connection2->prepare($sql);
-                                            $result->execute($data);
+                                            if (! customGbn_isExistBySql($pdo, "SELECT * FROM `gibbonFamilyRelationship` WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonID1=:gibbonPersonID1 AND gibbonPersonID2=:gibbonPersonID2", [
+                                                'gibbonFamilyID' => $gibbonFamilyID,
+                                                'gibbonPersonID1' => $gibbonPersonIDParent2
+                                            ])) {
+                                                $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
+                                                $result = $connection2->prepare($sql);
+                                                $result->execute($data);
+                                            }
                                         } catch (PDOException $e) {
                                             echo "<div class='error'>" . $e->getMessage() . '</div>';
                                         }
@@ -1643,7 +1692,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $data = array(
                             'gibbonApplicationFormID' => $gibbonApplicationFormID
                         );
-                        $sql = "UPDATE gibbonApplicationForm SET status='Accepted' WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
+                        $sql = "UPDATE gibbonApplicationForm SET status='Accepted'";
+                        if (! empty($gibbonFamilyID)) {
+                            $sql .= ", gibbonFamilyID='$gibbonFamilyID'";
+                        }
+                        $sql .= " WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

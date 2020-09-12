@@ -27,10 +27,13 @@ function customGbn_getSql($string, $data)
         if ($indexed)
             $string = preg_replace('/\?/', $v, $string, 1);
         else {
+            var_dump(":$k", "$v", $string);
             if ($i == $total) {
                 $string = str_replace(":$k", "$v", $string);
-            } else {
+            } elseif (stristr($string, ":$k,")) {
                 $string = str_replace(":$k,", "$v,", $string);
+            } else {
+                $string = str_replace(":$k", "$v", $string);
             }
         }
         $i ++;
@@ -40,7 +43,9 @@ function customGbn_getSql($string, $data)
 
 function customGbn_getPostsParams()
 {
-    return 'postsParams=' . urlencode(json_encode($_POST));
+    if (! empty($_POST))
+        return '&postsParams=' . urlencode(json_encode($_POST));
+    return '';
 }
 
 function customGbn_getSqlStudentsCanEnrolment()
@@ -61,3 +66,11 @@ function customGbn_getSqlRollGroup()
     return $sql;
 }
 
+function customGbn_isExistBySql($pdo, $sql, $data = [])
+{
+    $result = $pdo->executeQuery($data, $sql);
+    if ($result->rowCount() > 0) {
+        return true;
+    }
+    return false;
+}

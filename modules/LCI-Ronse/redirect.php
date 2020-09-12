@@ -15,10 +15,14 @@ if (! empty($_GET['postsParams'])) {
 // check if file exist
 If (isset($_GET['q'])) {
     $root = dirname(dirname(dirname(__FILE__)));
-    if (! is_file($root. urldecode($_GET['q']))) {
+    $q = urldecode($_GET['q']);
+    // Redirect to Students module if not exist
+    $mdl_1 = '/Students/';
+    $mdl_2 = '/LCI-Ronse/';
+    if (! is_file($root . $q) && (stristr($q, $mdl_1) || stristr($q, $mdl_2))) {
         $url = '?';
-        $url .= 'q=' . str_replace('LCI-Ronse', 'Students', urldecode($_GET['q']));
-        $url .= '&' . customGbn_getPostsParams();
+        $url .= 'q=' . str_replace($mdl_2, $mdl_1, $q);
+        $url .= customGbn_getPostsParams();
         header("Location: {$url}");
     }
 }
@@ -31,7 +35,7 @@ if (isset($_GET['q']) && urldecode($_GET['q']) == '/modules/Students/application
     // $_POST['applicationType'];
     $url = '?';
     $url .= 'q=/modules/LCI-Ronse/applicationForm_custom.php';
-    $url .= '&' . customGbn_getPostsParams();
+    $url .= customGbn_getPostsParams();
     header("Location: {$url}");
 }
 
