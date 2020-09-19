@@ -41,7 +41,7 @@ $url         = "";            // Your URL
  * One array entry for every database table you need to create. Convention dictates that you preface the table name with the module name, to keep the db neat.
  * Other sql can be run, but resulting data will not be cleaned up on uninstall.
  */
-$moduleTables[] = "INSERT INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES ('Inconnu', '');";
+$moduleTables[] = "";
 
 /**
  * Settings

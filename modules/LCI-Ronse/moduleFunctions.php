@@ -23,6 +23,7 @@ function customGbn_getSql($string, $data)
     $total = count($data);
     $i = 1;
     foreach ($data as $k => $v) {
+        $v = utf8_encode($v);
         $v = "'$v'";
         if ($indexed)
             $string = preg_replace('/\?/', $v, $string, 1);
@@ -73,4 +74,38 @@ function customGbn_isExistBySql($pdo, $sql, $data = [])
         return true;
     }
     return false;
+}
+
+function customGbn_printMsg($msg)
+{
+    print $msg . '<br/>';
+}
+
+function customGbn_printErr($msg)
+{
+    $msg = '<span style="color:red;">' . $msg . '</span>';
+    print $msg . '<br/>';
+}
+
+function customGbn_printWarning($msg)
+{
+    $msg = '<span style="color:orange;">' . $msg . '</span>';
+    print $msg . '<br/>';
+}
+
+function customGbn_quote($connection2, $str)
+{
+    //$str = utf8_encode($str);
+    $str = $connection2->quote($str);
+    return $str;
+}
+
+function customGbn_getModuleByName($pdo, $name)
+{
+    $row = false;
+    $result = $pdo->executeQuery([], "SELECT * FROM gibbonModule WHERE name='$name'");
+    if ($result && $result->rowCount() == 1) {
+        $row = $result->fetch();
+    }
+    return $row;
 }

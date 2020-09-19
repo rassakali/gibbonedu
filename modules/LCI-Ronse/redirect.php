@@ -85,3 +85,4 @@ if (isset($_GET['q']) && urldecode($_GET['q']) == '/modules/Students/studentEnro
     $url .= '&search=' . $_GET['search'];
     header("Location: {$url}");
 }
+

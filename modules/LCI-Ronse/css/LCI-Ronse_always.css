@@ -1,0 +1,23 @@
+/******************/
+/*** Custom *******/
+/******************/
+.LV_validation_message {
+	position: relative !important;
+}
+[name=parent1phone1], [name=parent2phone1] {
+	width: 200% !important;
+}
+.select2-results__options {
+	text-align: inherit !important;
+}
+
+/******************/
+/*** Custom RTL *******/
+/******************/
+/* pour tester aller sur https://lcironse.be/gbn/index.php?q=%2Fmodules%2FStaff%2Fstaff_manage_add.php&search= */
+[dir="rtl"].-ml-24 {
+	margin-left: 0 !important;
+}
+[dir="rtl"].mr-4 {
+	margin-right: -5rem !important;
+}

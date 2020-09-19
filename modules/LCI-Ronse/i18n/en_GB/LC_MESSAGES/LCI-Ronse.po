@@ -1,0 +1,21 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Gibbon\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Application Form"
+msgstr ""
+
+msgid "Manage Applications"
+msgstr ""
+
+msgid "Student Enrolment"
+msgstr ""
+
+msgid "Manage Recurring Invoices"
+msgstr ""

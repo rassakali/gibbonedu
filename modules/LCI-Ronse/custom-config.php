@@ -6,5 +6,7 @@
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
 include_once dirname(dirname(dirname(__FILE__))) . '/custom-config.php';
+include_once dirname(__FILE__) . '/define.php';
 include_once dirname(__FILE__) . '/moduleFunctions.php';
 include_once dirname(__FILE__) . '/redirect.php';
+
